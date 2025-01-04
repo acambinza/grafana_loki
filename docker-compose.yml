@@ -1,5 +1,8 @@
 version: '3.8'
 
+networks:
+  app_log:
+    driver: bridge
 
 services:
   loki:
@@ -7,11 +10,8 @@ services:
     container_name: loki
     ports:
       - "3100:3100"
-    #volumes:
-    #  - ./config/loki-config.yml:/etc/loki/loki-config.yml
-    #  - ./data/loki/data:/loki
-    #command: -config.file=/etc/loki/loki-config.yml
-    #restart: unless-stopped
+    networks:
+      - app_log 
 
 
   promtail:
@@ -24,6 +24,10 @@ services:
     command: -config.file=/etc/promtail/promtail-config.yml
     ports:
       - 9080:9080 
+    depends_on:
+      - loki
+    networks:
+      - app_log 
 
 
   grafana:
@@ -38,5 +42,8 @@ services:
       - loki
     volumes:
       - ./config/grafana:/etc/grafana/provisioning/datasources
+      - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./dashboards:/etc/grafana/provisioning/dashboards
+    networks:
+      - app_log 
 
