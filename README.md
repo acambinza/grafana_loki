@@ -46,6 +46,25 @@
 Obs.: Monitoramento e Alertas (Logs de nível WARN e ERROR frequentemente disparam alertas em sistemas de monitoramento.)
 
 
+## Estrutura de logs recomentada pela OWASP
+
+```json
+{
+  "timestamp": "2025-01-04T15:35:00Z",
+  "level": "error",
+  "application": "payment-service",
+  "event": "payment_failure",
+  "message": "Payment failed due to insufficient funds",
+  "userId": "67890",
+  "transactionId": "TXN123456",
+  "amount": 150.00,
+  "currency": "USD",
+  "traceId": "z1y2x3w4v5u6t7s8",
+  "stack": "Error: InsufficientFundsException at PaymentProcessor.process (PaymentService.java:45)"
+}
+```
+
+
 ## OBS
 - O Promtail lê os logs (ficheiros) de várias fontes/origens, e os envia no Loki, e o Grafana faz
 a conexão com o Loki para ler esses registos e os apresenta em um dashboard, para melhor serem visualizados.
@@ -60,3 +79,15 @@ a conexão com o Loki para ler esses registos e os apresenta em um dashboard, pa
 - APPs:
     - grafana: http://localhost:3000
     - promtail: http://localhost:9080
+
+
+## Exemplo de LogQL  
+- link: https://grafana.com/docs/loki/latest/query/
+
+### NA APP
+
+- {job="app_logs"} |= "INFO"               -> vai trazer todos dos logs que contém o info
+- {job="app_logs"} != "INFO"               -> vai trazer todos dos logs excepto o info
+- {job="app_logs"} |~ "INFO|ERROR"         -> vai filtrar os logs de info e de error
+- {job="app_logs"} !~ "INFO|ERROR"         -> vai filtrar os logs excepto os de infor e error
+- {job="app_logs"} | logfmt                -> formata os logs
