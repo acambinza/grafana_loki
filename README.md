@@ -1,3 +1,6 @@
+<img src="./img/app.png">
+
+
 # GRAFANA E LOKI
 - Aplicação de exemplo para mostrar como funcionar e como usar os logs
 
